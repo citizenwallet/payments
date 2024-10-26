@@ -1,6 +1,10 @@
 import { CommunityConfig } from "jsr:@citizenwallet/sdk";
 import { formatUnits } from "npm:ethers";
 
+import communityJson from "./community.json" with {
+    type: "json",
+};
+
 export interface Notification {
     title: string;
     body: string;
@@ -12,10 +16,8 @@ export interface ERC20TransferData {
     value: string;
 }
 
-export const communityConfig = async () => {
-    const config = await Deno.readTextFile("./community.json");
-
-    return new CommunityConfig(JSON.parse(config));
+export const communityConfig = () => {
+    return new CommunityConfig(communityJson);
 };
 
 export const createERC20TransferNotification = (
