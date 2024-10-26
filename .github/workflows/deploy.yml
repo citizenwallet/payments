@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Add firebase.json file
+        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > ./supabase/functions/_firebase/firebase.json
+
       - uses: supabase/setup-cli@v1
         with:
           version: latest
