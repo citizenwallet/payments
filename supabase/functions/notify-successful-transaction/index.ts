@@ -12,6 +12,7 @@ import {
   createERC20TransferNotification,
   type ERC20TransferData,
 } from "../_citizen-wallet/index.ts";
+import type { Profile } from "jsr:@citizenwallet/sdk";
 
 Deno.serve(async (req) => {
   const { record } = await req.json();
@@ -22,7 +23,7 @@ Deno.serve(async (req) => {
     return new Response("Invalid record data", { status: 400 });
   }
 
-  const { dest, sender, value, tx_hash, status, data } = record;
+  const { dest, status, data } = record;
 
   if (!dest || typeof dest !== "string") {
     return new Response(
@@ -31,7 +32,7 @@ Deno.serve(async (req) => {
     );
   }
 
-  const community = await communityConfig();
+  const community = communityConfig();
 
   if (dest.toLowerCase() !== community.primaryToken.address.toLowerCase()) {
     return new Response("Only process primary token transfers", {
@@ -48,9 +49,12 @@ Deno.serve(async (req) => {
   // Initialize Supabase client
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     {
-      global: { headers: { Authorization: req.headers.get("Authorization")! } },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
     },
   );
 
@@ -75,21 +79,29 @@ Deno.serve(async (req) => {
 
   const erc20TransferData = data as ERC20TransferData;
 
+  let profile: Profile | undefined;
+  const { data: profileData, error: profileError } = await supabaseClient
+    .from("Profiles")
+    .select()
+    .eq("account", erc20TransferData.from)
+    .maybeSingle();
+
+  if (profileError || !profileData) {
+    console.error("Error fetching profile:", profileError);
+  } else {
+    profile = profileData;
+  }
+
   const notification = createERC20TransferNotification(
     community,
     erc20TransferData,
+    profile,
   );
 
   // Prepare the notification message
   const message = {
     tokens: tokens.map((t) => t.token),
     notification,
-    data: {
-      tx_hash,
-      sender,
-      dest,
-      value,
-    },
     android: {
       priority: "high" as "high", // Ensure notifications are always sent with high priority
     },

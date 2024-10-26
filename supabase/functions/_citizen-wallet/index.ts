@@ -1,4 +1,4 @@
-import { CommunityConfig } from "jsr:@citizenwallet/sdk";
+import { CommunityConfig, type Profile } from "jsr:@citizenwallet/sdk";
 import { formatUnits } from "npm:ethers";
 
 import communityJson from "./community.json" with {
@@ -16,6 +16,10 @@ export interface ERC20TransferData {
     value: string;
 }
 
+export interface MetadataUpdateData {
+    _tokenId: string;
+}
+
 export const communityConfig = () => {
     return new CommunityConfig(communityJson);
 };
@@ -23,11 +27,20 @@ export const communityConfig = () => {
 export const createERC20TransferNotification = (
     config: CommunityConfig,
     data: ERC20TransferData,
+    profile?: Profile,
 ): Notification => {
     const community = config.community;
     const token = config.primaryToken;
 
     const value = formatUnits(data.value, token.decimals);
+
+    if (profile) {
+        return {
+            title: community.name,
+            body:
+                `${value} ${token.symbol} received from ${profile.name} (@${profile.username})`,
+        };
+    }
 
     return {
         title: community.name,

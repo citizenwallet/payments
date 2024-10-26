@@ -1,7 +1,7 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@citizenwallet/sdk@^2.0.3": "2.0.3",
+    "jsr:@citizenwallet/sdk@^2.0.6": "2.0.6",
     "jsr:@supabase/functions-js@^2.4.3": "2.4.3",
     "jsr:@supabase/supabase-js@^2.45.6": "2.45.6",
     "npm:@supabase/auth-js@2.65.1": "2.65.1",
@@ -15,8 +15,8 @@
     "npm:openai@^4.52.5": "4.68.4"
   },
   "jsr": {
-    "@citizenwallet/sdk@2.0.3": {
-      "integrity": "e879c2ca6e952cbc302d0fe8c4f40a76484e93a8cfc0621ad1abf7fbc974c866"
+    "@citizenwallet/sdk@2.0.6": {
+      "integrity": "36086f6605ac1b28b33f82d3d0bd40ade8c922f21f6a62a61af360b49f6cb9ab"
     },
     "@supabase/functions-js@2.4.3": {
       "integrity": "010834c9e7d2996b4be8e4004a15ed8f42b326490e4b354683f9c191353b76cc",
@@ -1016,7 +1016,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@citizenwallet/sdk@^2.0.3",
+      "jsr:@citizenwallet/sdk@^2.0.6",
       "jsr:@supabase/functions-js@^2.4.3",
       "jsr:@supabase/supabase-js@^2.45.6",
       "npm:ethers@^6.13.4",
