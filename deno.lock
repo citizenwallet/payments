@@ -1,8 +1,10 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@citizenwallet/sdk@^2.0.7": "2.0.7",
+    "jsr:@citizenwallet/sdk@*": "2.0.8",
+    "jsr:@citizenwallet/sdk@^2.0.8": "2.0.8",
     "jsr:@supabase/functions-js@^2.4.3": "2.4.3",
+    "jsr:@supabase/supabase-js@2": "2.45.6",
     "jsr:@supabase/supabase-js@^2.45.6": "2.45.6",
     "npm:@supabase/auth-js@2.65.1": "2.65.1",
     "npm:@supabase/functions-js@2.4.3": "2.4.3",
@@ -10,13 +12,14 @@
     "npm:@supabase/postgrest-js@1.16.3": "1.16.3",
     "npm:@supabase/realtime-js@2.10.7": "2.10.7",
     "npm:@supabase/storage-js@2.7.1": "2.7.1",
+    "npm:ethers@*": "6.13.4",
     "npm:ethers@^6.13.4": "6.13.4",
     "npm:firebase-admin@^12.7.0": "12.7.0",
     "npm:openai@^4.52.5": "4.68.4"
   },
   "jsr": {
-    "@citizenwallet/sdk@2.0.7": {
-      "integrity": "2a150307a01ceb4667d615c2a96f1cf4420788b546bc9d818c96d8bd27753eae"
+    "@citizenwallet/sdk@2.0.8": {
+      "integrity": "6858eb0e286d1df24272107d258500831971c14ae5b190e917ee533111604e00"
     },
     "@supabase/functions-js@2.4.3": {
       "integrity": "010834c9e7d2996b4be8e4004a15ed8f42b326490e4b354683f9c191353b76cc",
@@ -1016,7 +1019,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@citizenwallet/sdk@^2.0.7",
+      "jsr:@citizenwallet/sdk@^2.0.8",
       "jsr:@supabase/functions-js@^2.4.3",
       "jsr:@supabase/supabase-js@^2.45.6",
       "npm:ethers@^6.13.4",
