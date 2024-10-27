@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
 
   let profile: Profile | undefined;
   const { data: profileData, error: profileError } = await supabaseClient
-    .from("Profiles")
+    .from("a_profiles")
     .select()
     .eq("account", erc20TransferData.from)
     .maybeSingle();

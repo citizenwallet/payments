@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
     }
 
     const result = await supabaseClient
-        .from("Profiles")
+        .from("a_profiles")
         .upsert({ ...profile, token_id: metadataUpdateData._tokenId }, {
             onConflict: "account",
         });
