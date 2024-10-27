@@ -67,7 +67,6 @@ Deno.serve(async (req) => {
     const result = await upsertProfile(
         supabaseClient,
         profile,
-        metadataUpdateData._tokenId,
     );
 
     console.log(result);

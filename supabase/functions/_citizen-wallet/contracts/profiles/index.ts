@@ -8,11 +8,12 @@ import profileAbi from "./Profile.abi.json" with {
     type: "json",
 };
 import { downloadJsonFromIpfs } from "../../ipfs/index.ts";
+import type { ProfileWithTokenId } from "../../../_db/profiles.ts";
 
 export const getProfileFromId = async (
     config: CommunityConfig,
     id: string,
-): Promise<Profile | undefined> => {
+): Promise<ProfileWithTokenId | undefined> => {
     const rpc = new JsonRpcProvider(config.primaryRPCUrl);
 
     const contract = new Contract(
@@ -35,7 +36,34 @@ export const getProfileFromId = async (
             throw new Error("IPFS_URL is not set");
         }
 
-        return formatProfileImageLinks(baseUrl, profile);
+        return {
+            ...formatProfileImageLinks(baseUrl, profile),
+            token_id: id,
+        };
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        return;
+    }
+};
+
+export const getProfileFromAddress = async (
+    config: CommunityConfig,
+    address: string,
+): Promise<ProfileWithTokenId | undefined> => {
+    const rpc = new JsonRpcProvider(config.primaryRPCUrl);
+
+    const contract = new Contract(
+        config.community.profile.address,
+        profileAbi,
+        rpc,
+    );
+
+    try {
+        const id: bigint = await contract.getFunction("fromAddressToId")(
+            address,
+        );
+
+        return getProfileFromId(config, id.toString());
     } catch (error) {
         console.error("Error fetching profile:", error);
         return;

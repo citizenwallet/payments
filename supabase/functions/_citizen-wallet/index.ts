@@ -16,12 +16,24 @@ export interface ERC20TransferData {
     value: string;
 }
 
+export interface ERC20TransferExtraData {
+    description: string;
+}
+
 export interface MetadataUpdateData {
     _tokenId: string;
 }
 
 export const communityConfig = () => {
     return new CommunityConfig(communityJson);
+};
+
+export const formatERC20TransactionValue = (
+    config: CommunityConfig,
+    value: string,
+) => {
+    const token = config.primaryToken;
+    return formatUnits(value, token.decimals);
 };
 
 export const createERC20TransferNotification = (
