@@ -5,7 +5,6 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { createClient } from "jsr:@supabase/supabase-js@2";
 import { sendNotification } from "../_firebase/index.ts";
 import {
   communityConfig,
@@ -13,6 +12,9 @@ import {
   type ERC20TransferData,
 } from "../_citizen-wallet/index.ts";
 import type { Profile } from "jsr:@citizenwallet/sdk";
+import { getServiceRoleClient } from "../_db/index.ts";
+import { getTokensForAddress } from "../_db/tokens.ts";
+import { getProfile } from "../_db/profiles.ts";
 
 Deno.serve(async (req) => {
   const { record } = await req.json();
@@ -47,26 +49,22 @@ Deno.serve(async (req) => {
   }
 
   // Initialize Supabase client
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    },
-  );
+  const supabaseClient = getServiceRoleClient();
 
   const chainId = Deno.env.get("CHAIN_ID");
   if (!chainId) {
     return new Response("CHAIN_ID is required", { status: 500 });
   }
 
+  const erc20TransferData = data as ERC20TransferData;
+
   // Fetch tokens for the destination address (contract interacted with)
-  const { data: tokens, error } = await supabaseClient
-    .from(`t_push_token_${chainId}_${dest.toLowerCase()}`)
-    .select("token");
+  const { data: tokens, error } = await getTokensForAddress(
+    supabaseClient,
+    chainId,
+    dest,
+    erc20TransferData.to,
+  );
 
   if (error) {
     console.error("Error fetching tokens:", error);
@@ -77,14 +75,11 @@ Deno.serve(async (req) => {
     return new Response("No tokens found for the account", { status: 200 });
   }
 
-  const erc20TransferData = data as ERC20TransferData;
-
   let profile: Profile | undefined;
-  const { data: profileData, error: profileError } = await supabaseClient
-    .from("a_profiles")
-    .select()
-    .eq("account", erc20TransferData.from)
-    .maybeSingle();
+  const { data: profileData, error: profileError } = await getProfile(
+    supabaseClient,
+    erc20TransferData.from,
+  );
 
   if (profileError || !profileData) {
     console.error("Error fetching profile:", profileError);

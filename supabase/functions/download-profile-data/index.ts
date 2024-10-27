@@ -5,12 +5,13 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { createClient } from "jsr:@supabase/supabase-js@2";
 import {
     communityConfig,
     type MetadataUpdateData,
 } from "../_citizen-wallet/index.ts";
 import { getProfileFromId } from "../_citizen-wallet/contracts/profiles/index.ts";
+import { getServiceRoleClient } from "../_db/index.ts";
+import { upsertProfile } from "../_db/profiles.ts";
 
 Deno.serve(async (req) => {
     const { record } = await req.json();
@@ -46,18 +47,6 @@ Deno.serve(async (req) => {
         });
     }
 
-    // Initialize Supabase client with service role key
-    const supabaseClient = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-        {
-            auth: {
-                autoRefreshToken: false,
-                persistSession: false,
-            },
-        },
-    );
-
     const metadataUpdateData = data as MetadataUpdateData;
 
     // fetch the profile
@@ -72,11 +61,14 @@ Deno.serve(async (req) => {
         return new Response("Profile not found, ignore", { status: 200 });
     }
 
-    const result = await supabaseClient
-        .from("a_profiles")
-        .upsert({ ...profile, token_id: metadataUpdateData._tokenId }, {
-            onConflict: "account",
-        });
+    // Initialize Supabase client with service role key
+    const supabaseClient = getServiceRoleClient();
+
+    const result = await upsertProfile(
+        supabaseClient,
+        profile,
+        metadataUpdateData._tokenId,
+    );
 
     console.log(result);
 
