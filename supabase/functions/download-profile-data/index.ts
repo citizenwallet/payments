@@ -9,9 +9,9 @@ import {
     communityConfig,
     type MetadataUpdateData,
 } from "../_citizen-wallet/index.ts";
-import { getProfileFromId } from "../_citizen-wallet/contracts/profiles/index.ts";
 import { getServiceRoleClient } from "../_db/index.ts";
 import { upsertProfile } from "../_db/profiles.ts";
+import { getProfileFromId } from "jsr:@citizenwallet/sdk";
 
 Deno.serve(async (req) => {
     const { record } = await req.json();

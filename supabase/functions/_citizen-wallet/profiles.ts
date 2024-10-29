@@ -1,11 +1,13 @@
 import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
-import type { CommunityConfig } from "jsr:@citizenwallet/sdk";
+import {
+    type CommunityConfig,
+    getProfileFromAddress,
+} from "jsr:@citizenwallet/sdk";
 import {
     getProfile,
     insertAnonymousProfile,
     upsertProfile,
 } from "../_db/profiles.ts";
-import { getProfileFromAddress } from "./contracts/profiles/index.ts";
 
 export const ensureProfileExists = async (
     client: SupabaseClient,

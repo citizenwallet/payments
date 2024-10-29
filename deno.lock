@@ -1,25 +1,29 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@citizenwallet/sdk@*": "2.0.8",
-    "jsr:@citizenwallet/sdk@^2.0.8": "2.0.8",
+    "jsr:@citizenwallet/sdk@^2.0.13": "2.0.13",
     "jsr:@supabase/functions-js@^2.4.3": "2.4.3",
-    "jsr:@supabase/supabase-js@2": "2.45.6",
-    "jsr:@supabase/supabase-js@^2.45.6": "2.45.6",
+    "jsr:@supabase/supabase-js@^2.46.0": "2.46.0",
     "npm:@supabase/auth-js@2.65.1": "2.65.1",
     "npm:@supabase/functions-js@2.4.3": "2.4.3",
     "npm:@supabase/node-fetch@2.6.15": "2.6.15",
-    "npm:@supabase/postgrest-js@1.16.3": "1.16.3",
+    "npm:@supabase/postgrest-js@1.17.0": "1.17.0",
     "npm:@supabase/realtime-js@2.10.7": "2.10.7",
     "npm:@supabase/storage-js@2.7.1": "2.7.1",
     "npm:ethers@*": "6.13.4",
+    "npm:ethers@^6.11.1": "6.13.4",
     "npm:ethers@^6.13.4": "6.13.4",
+    "npm:fflate@~0.8.2": "0.8.2",
     "npm:firebase-admin@^12.7.0": "12.7.0",
     "npm:openai@^4.52.5": "4.68.4"
   },
   "jsr": {
-    "@citizenwallet/sdk@2.0.8": {
-      "integrity": "6858eb0e286d1df24272107d258500831971c14ae5b190e917ee533111604e00"
+    "@citizenwallet/sdk@2.0.13": {
+      "integrity": "ef6be061c956f102319a091c218686762001847f06b5bd13f39ddf17afad8856",
+      "dependencies": [
+        "npm:ethers@^6.11.1",
+        "npm:fflate"
+      ]
     },
     "@supabase/functions-js@2.4.3": {
       "integrity": "010834c9e7d2996b4be8e4004a15ed8f42b326490e4b354683f9c191353b76cc",
@@ -27,8 +31,8 @@
         "npm:openai"
       ]
     },
-    "@supabase/supabase-js@2.45.6": {
-      "integrity": "3d33772c268dd15aae12502c1565ef18ee6c6d9f879d43ff84f5cc7781d4d1a1",
+    "@supabase/supabase-js@2.46.0": {
+      "integrity": "c9f2168753f1155822c4913732b468f2676c9e1107e548f3428daca005783d7b",
       "dependencies": [
         "npm:@supabase/auth-js",
         "npm:@supabase/functions-js@2.4.3",
@@ -230,8 +234,8 @@
         "whatwg-url"
       ]
     },
-    "@supabase/postgrest-js@1.16.3": {
-      "integrity": "sha512-HI6dsbW68AKlOPofUjDTaosiDBCtW4XAm0D18pPwxoW3zKOE2Ru13Z69Wuys9fd6iTpfDViNco5sgrtnP0666A==",
+    "@supabase/postgrest-js@1.17.0": {
+      "integrity": "sha512-vbtb72VpyCkDjcD95SAW4C+3B6NNEICNlEN9H6LcSfIxk5qPImwZ9hVYLa20i+P8GXmKWDoSjjJEK2j6qlR1qQ==",
       "dependencies": [
         "@supabase/node-fetch"
       ]
@@ -242,7 +246,7 @@
         "@supabase/node-fetch",
         "@types/phoenix",
         "@types/ws",
-        "ws@8.18.0"
+        "ws"
       ]
     },
     "@supabase/storage-js@2.7.1": {
@@ -495,7 +499,7 @@
         "@types/node@22.7.5",
         "aes-js",
         "tslib",
-        "ws@8.17.1"
+        "ws"
       ]
     },
     "event-target-shim@5.0.1": {
@@ -521,6 +525,9 @@
       "dependencies": [
         "websocket-driver"
       ]
+    },
+    "fflate@0.8.2": {
+      "integrity": "sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A=="
     },
     "firebase-admin@12.7.0": {
       "integrity": "sha512-raFIrOyTqREbyXsNkSHyciQLfv8AUZazehPaQS1lZBSCDYW74FYXU0nQZa3qHI4K+hawohlDbywZ4+qce9YNxA==",
@@ -989,9 +996,6 @@
     "ws@8.17.1": {
       "integrity": "sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ=="
     },
-    "ws@8.18.0": {
-      "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw=="
-    },
     "y18n@5.0.8": {
       "integrity": "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA=="
     },
@@ -1019,9 +1023,9 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@citizenwallet/sdk@^2.0.8",
+      "jsr:@citizenwallet/sdk@^2.0.13",
       "jsr:@supabase/functions-js@^2.4.3",
-      "jsr:@supabase/supabase-js@^2.45.6",
+      "jsr:@supabase/supabase-js@^2.46.0",
       "npm:ethers@^6.13.4",
       "npm:firebase-admin@^12.7.0"
     ]
