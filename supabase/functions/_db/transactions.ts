@@ -9,8 +9,12 @@ export interface Transaction {
     from: string;
     to: string;
     value: string;
-    description: string;
     status: LogStatus;
+}
+
+export interface TransactionWithDescription {
+    id: string;
+    description: string;
 }
 
 const TRANSACTIONS_TABLE = "a_transactions";
@@ -18,6 +22,15 @@ const TRANSACTIONS_TABLE = "a_transactions";
 export const upsertTransaction = async (
     client: SupabaseClient,
     transaction: Transaction,
+) => {
+    return client.from(TRANSACTIONS_TABLE).upsert(transaction, {
+        onConflict: "id",
+    });
+};
+
+export const upsertTransactionWithDescription = async (
+    client: SupabaseClient,
+    transaction: TransactionWithDescription,
 ) => {
     return client.from(TRANSACTIONS_TABLE).upsert(transaction, {
         onConflict: "id",

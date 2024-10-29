@@ -11,7 +11,9 @@ import {
 import type { CommunityConfig } from "jsr:@citizenwallet/sdk";
 import {
     type Transaction,
+    type TransactionWithDescription,
     upsertTransaction,
+    upsertTransactionWithDescription,
 } from "../functions/_db/transactions.ts";
 
 const processTransactions = async (
@@ -69,11 +71,19 @@ const processTransactions = async (
                 community,
                 erc20TransferData.value,
             ),
-            description: erc20TransferExtraData.description || "",
             status: log.status,
         };
 
+        const transactionWithDescription: TransactionWithDescription = {
+            id: log.hash,
+            description: erc20TransferExtraData.description || "",
+        };
+
         await upsertTransaction(supabaseClient, transaction);
+        await upsertTransactionWithDescription(
+            supabaseClient,
+            transactionWithDescription,
+        );
     }
 
     if (logs.length >= limit) {

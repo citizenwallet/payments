@@ -5,14 +5,12 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import {
-  communityConfig,
-  type ERC20TransferData,
-  formatERC20TransactionValue,
-} from "../_citizen-wallet/index.ts";
+import { type ERC20TransferExtraData } from "../_citizen-wallet/index.ts";
 import { getServiceRoleClient } from "../_db/index.ts";
-import { type Transaction, upsertTransaction } from "../_db/transactions.ts";
-import { ensureProfileExists } from "../_citizen-wallet/profiles.ts";
+import {
+  type TransactionWithDescription,
+  upsertTransactionWithDescription,
+} from "../_db/transactions.ts";
 
 Deno.serve(async (req) => {
   const { record } = await req.json();
@@ -25,50 +23,27 @@ Deno.serve(async (req) => {
 
   const {
     hash,
-    tx_hash,
-    created_at,
-    updated_at,
-    dest,
-    status,
-    data,
+    extra_data,
   } = record;
-
-  if (!dest || typeof dest !== "string") {
-    return new Response(
-      "Destination address is required and must be a string",
-      { status: 400 },
-    );
-  }
-
-  const community = communityConfig();
-
-  if (dest.toLowerCase() !== community.primaryToken.address.toLowerCase()) {
-    return new Response("Only process primary token transfers", {
-      status: 200,
-    });
-  }
 
   // Initialize Supabase client
   const supabaseClient = getServiceRoleClient();
 
-  const erc20TransferData = data as ERC20TransferData;
-
-  await ensureProfileExists(supabaseClient, community, erc20TransferData.from);
-  await ensureProfileExists(supabaseClient, community, erc20TransferData.to);
+  let erc20TransferExtraData: ERC20TransferExtraData = { description: "" };
+  if (extra_data) {
+    erc20TransferExtraData = extra_data as ERC20TransferExtraData;
+  }
 
   // insert transaction into db
-  const transaction: Transaction = {
+  const transaction: TransactionWithDescription = {
     id: hash,
-    hash: tx_hash,
-    created_at,
-    updated_at,
-    from: erc20TransferData.from,
-    to: erc20TransferData.to,
-    value: formatERC20TransactionValue(community, erc20TransferData.value),
-    status: status,
+    description: erc20TransferExtraData.description || "",
   };
 
-  const { error } = await upsertTransaction(supabaseClient, transaction);
+  const { error } = await upsertTransactionWithDescription(
+    supabaseClient,
+    transaction,
+  );
   if (error) {
     console.error("Error inserting transaction:", error);
   }
