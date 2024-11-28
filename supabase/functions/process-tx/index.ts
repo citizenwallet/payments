@@ -13,6 +13,8 @@ import {
 import { getServiceRoleClient } from "../_db/index.ts";
 import { type Transaction, upsertTransaction } from "../_db/transactions.ts";
 import { ensureProfileExists } from "../_citizen-wallet/profiles.ts";
+import { createOrder, findOrdersWithTxHash } from "../_db/orders.ts";
+import { getPlacesByAccount } from "../_db/places.ts";
 
 Deno.serve(async (req) => {
   const { record } = await req.json();
@@ -56,6 +58,11 @@ Deno.serve(async (req) => {
   await ensureProfileExists(supabaseClient, community, erc20TransferData.from);
   await ensureProfileExists(supabaseClient, community, erc20TransferData.to);
 
+  const formattedValue = formatERC20TransactionValue(
+    community,
+    erc20TransferData.value,
+  );
+
   // insert transaction into db
   const transaction: Transaction = {
     id: hash,
@@ -64,9 +71,31 @@ Deno.serve(async (req) => {
     updated_at,
     from: erc20TransferData.from,
     to: erc20TransferData.to,
-    value: formatERC20TransactionValue(community, erc20TransferData.value),
+    value: formattedValue,
     status: status,
   };
+
+  // create order if it doesn't exist and destination is a place
+  const { data: orders } = await findOrdersWithTxHash(
+    supabaseClient,
+    tx_hash,
+  );
+  if (!orders || orders.length === 0) {
+    const { data: places } = await getPlacesByAccount(
+      supabaseClient,
+      erc20TransferData.to,
+    );
+
+    const place = places?.[0] ?? null;
+    if (place) {
+      await createOrder(
+        supabaseClient,
+        place.id,
+        parseFloat(formattedValue) * 100,
+        tx_hash,
+      );
+    }
+  }
 
   const { error } = await upsertTransaction(supabaseClient, transaction);
   if (error) {

@@ -1,4 +1,7 @@
-import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
+import type {
+    PostgrestSingleResponse,
+    SupabaseClient,
+} from "jsr:@supabase/supabase-js@2";
 import type { LogStatus } from "jsr:@citizenwallet/sdk";
 
 export interface Transaction {
@@ -35,4 +38,12 @@ export const upsertTransactionWithDescription = async (
     return client.from(TRANSACTIONS_TABLE).upsert(transaction, {
         onConflict: "id",
     });
+};
+
+export const getTransactionByHash = (
+    client: SupabaseClient,
+    hash: string,
+): Promise<PostgrestSingleResponse<Transaction>> => {
+    return client.from(TRANSACTIONS_TABLE).select("*").eq("hash", hash)
+        .maybeSingle();
 };
