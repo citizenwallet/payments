@@ -54,8 +54,7 @@ Deno.serve(async (req) => {
       transactionData.hash,
     );
     if (orders && orders.length > 0) {
-      const order = orders?.[0] ?? null;
-      if (order) {
+      for (const order of orders) {
         await setOrderDescription(
           supabaseClient,
           order.id,

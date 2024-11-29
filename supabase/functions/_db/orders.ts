@@ -48,3 +48,11 @@ export const setOrderDescription = (
 ): Promise<PostgrestResponse<Order>> => {
     return client.from(TABLE_NAME).update({ description }).eq("id", orderId);
 };
+
+export const updateOrderStatus = (
+    client: SupabaseClient,
+    orderId: number,
+    status: "pending" | "paid" | "cancelled",
+): Promise<PostgrestResponse<Order>> => {
+    return client.from(TABLE_NAME).update({ status }).eq("id", orderId);
+};

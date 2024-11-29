@@ -13,7 +13,11 @@ import {
 import { getServiceRoleClient } from "../_db/index.ts";
 import { type Transaction, upsertTransaction } from "../_db/transactions.ts";
 import { ensureProfileExists } from "../_citizen-wallet/profiles.ts";
-import { createOrder, findOrdersWithTxHash } from "../_db/orders.ts";
+import {
+  createOrder,
+  findOrdersWithTxHash,
+  updateOrderStatus,
+} from "../_db/orders.ts";
 import { getPlacesByAccount } from "../_db/places.ts";
 
 Deno.serve(async (req) => {
@@ -94,6 +98,12 @@ Deno.serve(async (req) => {
         parseFloat(formattedValue) * 100,
         tx_hash,
       );
+    }
+  } else {
+    if (orders && orders.length > 0) {
+      for (const order of orders) {
+        await updateOrderStatus(supabaseClient, order.id, "paid");
+      }
     }
   }
 
