@@ -10,7 +10,7 @@ import { getServiceRoleClient } from "../_db/index.ts";
 import {
   getTransactionByHash,
   type TransactionWithDescription,
-  upsertTransactionWithDescription,
+  updateTransaction,
 } from "../_db/transactions.ts";
 import { findOrdersWithTxHash, setOrderDescription } from "../_db/orders.ts";
 
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
     }
   }
 
-  const { error } = await upsertTransactionWithDescription(
+  const { error } = await updateTransaction(
     supabaseClient,
     transaction,
   );

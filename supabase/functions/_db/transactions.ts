@@ -22,7 +22,7 @@ export interface TransactionWithDescription {
 
 const TRANSACTIONS_TABLE = "a_transactions";
 
-export const upsertTransaction = async (
+export const upsertTransaction = (
     client: SupabaseClient,
     transaction: Transaction,
 ) => {
@@ -31,19 +31,21 @@ export const upsertTransaction = async (
     });
 };
 
-export const upsertTransactionWithDescription = async (
+export const updateTransaction = (
     client: SupabaseClient,
     transaction: TransactionWithDescription,
 ) => {
-    return client.from(TRANSACTIONS_TABLE).upsert(transaction, {
-        onConflict: "id",
-    });
+    return client.from(TRANSACTIONS_TABLE).update(transaction).eq(
+        "id",
+        transaction.id,
+    );
 };
 
 export const getTransactionByHash = (
     client: SupabaseClient,
     hash: string,
 ): Promise<PostgrestSingleResponse<Transaction>> => {
+    // @ts-ignore: cryptic error
     return client.from(TRANSACTIONS_TABLE).select("*").eq("hash", hash)
         .maybeSingle();
 };
