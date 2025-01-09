@@ -31,14 +31,23 @@ export const upsertTransaction = (
     });
 };
 
-export const updateTransaction = (
+export const upsertTransactionWithDescription = async (
     client: SupabaseClient,
     transaction: TransactionWithDescription,
 ) => {
-    return client.from(TRANSACTIONS_TABLE).update(transaction).eq(
-        "id",
-        transaction.id,
-    );
+    // check if exists
+    const { data: existingTransaction } = await client.from(TRANSACTIONS_TABLE)
+        .select("*").eq("id", transaction.id).maybeSingle();
+    if (existingTransaction) {
+        return client.from(TRANSACTIONS_TABLE).update({
+            description: transaction.description,
+        }).eq("id", transaction.id);
+    }
+
+    return client.from(TRANSACTIONS_TABLE).insert({
+        ...transaction,
+        hash: "",
+    });
 };
 
 export const getTransactionByHash = (
